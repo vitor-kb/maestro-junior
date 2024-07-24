@@ -21,12 +21,17 @@ client.on('messageCreate', async message => {
         try {
             const data = await fetchData();
 
+            // console.log(data.name1)
+            // console.log(data.name2)
+
             if (data) {
                 message.channel.send(
+                    `Dia: ${data.olympicDay}\n` +
                     `Esporte: ${data.disciplineName}\n` +
                     `Modalidade: ${data.eventUnitName}\n` +
-                    `Horário previsto: ${data.startDate}\n` +
-                    `Horário de Encerramento: ${data.endDate}`
+                    `Horário previsto: ${data.formatTimeStartDate}\n` +
+                    `Horário de Encerramento: ${data.formatTimeEndDate}\n` +
+                    `Times: ${data.name1} x ${data.name2}`
                 );
             } else {
                 message.channel.send('Erro ao buscar os dados.');

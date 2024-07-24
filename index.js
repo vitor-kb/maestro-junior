@@ -8,7 +8,6 @@ const client = new Client({
     ]
 });
 
-const obs = new OBSWebSocket();
 dotenv.config();
 const TOKEN = process.env.TOKEN;
 

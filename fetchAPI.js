@@ -8,7 +8,7 @@ async function fetchData() {
         const competitorsList1 = unit.competitors[0];
         const competitorsList2 = unit.competitors[1];
 
-        const olympicDay = unit.olympicDay
+        const olympicDay = unit.olympicDay;
         const disciplineName = unit.disciplineName;
         const eventUnitName = unit.eventUnitName;
         const startDate = unit.startDate;

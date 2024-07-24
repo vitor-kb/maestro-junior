@@ -1,5 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const dotenv = require('dotenv');
+const { fetchData } = require('./fetchAPI.js');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -17,7 +18,23 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
     if (message.content === '!lista') {
-        message.channel.send('');
+        try {
+            const data = await fetchData();
+
+            if (data) {
+                message.channel.send(
+                    `Esporte: ${data.disciplineName}\n` +
+                    `Modalidade: ${data.eventUnitName}\n` +
+                    `Horário previsto: ${data.startDate}\n` +
+                    `Horário de Encerramento: ${data.endDate}`
+                );
+            } else {
+                message.channel.send('Erro ao buscar os dados.');
+            }
+        } catch (error) {
+            console.error('Erro ao processar a mensagem:', error);
+            message.channel.send('Erro ao buscar os dados.');
+        }
     }
 });
 

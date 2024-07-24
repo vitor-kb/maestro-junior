@@ -1,15 +1,28 @@
-fetch("https://sph-s-api.olympics.com/summer/schedules/api/POR/schedule/day/2024-07-24")
-    .then((response) => response.json())
-    .then((data) => {
+async function fetchData() {
+    try {
+        const response = await fetch("https://sph-s-api.olympics.com/summer/schedules/api/POR/schedule/day/2024-07-24");
+        const data = await response.json();
+
         const units = data.units;
+        const unit = units[0]; // Assuming you want the first unit's data
 
-        const disciplineName = units[0].disciplineName;
-        const eventUnitName = units[0].eventUnitName;
-        const startDate = units[0].startDate;
-        const endDate = units[0].endDate;
+        const disciplineName = unit.disciplineName;
+        const eventUnitName = unit.eventUnitName;
+        const startDate = unit.startDate;
+        const endDate = unit.endDate;
 
-        console.log("Esporte:", disciplineName,
-            "\nModalidade:", eventUnitName,
-            "\nHorário previsto:", startDate,
-            "\nHorário de Encerramento:", endDate);
-    })
+        const result = {
+            disciplineName,
+            eventUnitName,
+            startDate,
+            endDate
+        };
+
+        return result;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+    }
+}
+
+module.exports = { fetchData };

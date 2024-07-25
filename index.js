@@ -33,10 +33,12 @@ function readUrlsFromFile() {
 }
 
 // Get current date
-function getUrlForToday() {
-    const today = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
+function getUrlForTomorrow() {
+    const today = new Date();
+    today.setDate(today.getDate() + 1); // Increment the date by one day to get tomorrow
+    const tomorrow = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     const urls = readUrlsFromFile();
-    return urls.find(url => url.includes(today));
+    return urls.find(url => url.includes(tomorrow));
 }
 
 client.once('ready', () => {
@@ -46,7 +48,7 @@ client.once('ready', () => {
 client.on('messageCreate', async message => {
     if (message.content === '!lista') {
         try {
-            const apiUrl = getUrlForToday();
+            const apiUrl = getUrlForTomorrow();
 
             if (!apiUrl) {
                 message.channel.send('Não há eventos programados para hoje.');
@@ -56,15 +58,18 @@ client.on('messageCreate', async message => {
             const data = await fetchData(apiUrl);
 
             if (data && data.length > 0) {
-                const formattedData = data.map((item, index) => (
-                    `**Position ${index + 1}**\n` +
-                    `Dia: ${item.olympicDay}\n` +
-                    `Esporte: ${item.disciplineName}\n` +
-                    `Modalidade: ${item.eventUnitName}\n` +
-                    `Horário previsto: ${item.formatTimeStartDate}\n` +
-                    `Horário de Encerramento: ${item.formatTimeEndDate}\n` +
-                    `Times: ${item.name1} x ${item.name2}\n`
-                )).join('\n');
+                const formattedData = data.map((item, index) => {
+                    const timeTexto = item.name1 && item.name2 ? `Times: ${item.name1} x ${item.name2}\n` : '';
+                    return (
+                        `**Position ${index + 1}**\n` +
+                        `Dia: ${item.olympicDay}\n` +
+                        `Esporte: ${item.disciplineName}\n` +
+                        `Modalidade: ${item.eventUnitName}\n` +
+                        `Horário previsto: ${item.formatTimeStartDate}\n` +
+                        `Horário de Encerramento: ${item.formatTimeEndDate}\n` +
+                        timeTexto
+                    );
+                }).join('\n');
 
                 // Split message for discord limit
                 const messageChunks = splitMessage(formattedData, 2000);
